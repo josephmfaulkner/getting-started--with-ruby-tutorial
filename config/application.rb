@@ -23,5 +23,8 @@ module GettingStartedWithRubyTutorial
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Require users to confirm a new email address via an emailed link before it takes effect.
+    config.x.require_email_confirmation = true
   end
 end

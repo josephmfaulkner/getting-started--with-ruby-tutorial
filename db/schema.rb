@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_131033) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_184740) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -250,6 +250,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_131033) do
     t.datetime "updated_at", null: false
     t.string "first_name"
     t.string "last_name"
+    t.string "unconfirmed_email"
+    t.boolean "admin"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
