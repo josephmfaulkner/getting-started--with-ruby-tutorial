@@ -17,6 +17,10 @@
   ],
   "packageManager": "npm@10.9.2",
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.5.0",
+    "@mui/material": "^9.5.0",
     "@rails/actiontext": "^8.1.400",
     "@rails/activestorage": "^8.1.400",
     "@rspack/cli": "^2.2.9",

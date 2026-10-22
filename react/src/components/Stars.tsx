@@ -1,15 +1,7 @@
-import type { ReactNode } from "react"
+import { Rating } from "@mui/material"
 
-// Displays a 1-5 star rating, e.g. ★★★★☆
-export default function Stars({ rating, children }: { rating: number; children?: ReactNode }) {
-  const rounded = Math.round(rating)
-
-  return (
-    <div role="img" aria-label={`${rounded} out of 5 stars`}>
-      {[0, 1, 2, 3, 4].map((i) => (
-        <span key={i} className={i < rounded ? "gold" : "gray"} aria-hidden="true">★</span>
-      ))}
-      {children}
-    </div>
-  )
+// Read-only star rating, shown to the nearest half star
+export default function Stars({ rating, size = "small" }: { rating: number; size?: "small" | "medium" | "large" }) {
+  const rounded = Math.round(rating * 2) / 2
+  return <Rating value={rounded} precision={0.5} readOnly size={size} getLabelText={(value) => `${value} out of 5 stars`} />
 }

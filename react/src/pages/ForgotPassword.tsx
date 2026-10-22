@@ -1,33 +1,23 @@
-import { useState, type FormEvent } from "react"
-import { api, ApiError } from "../api/client"
+import { api } from "../api/client"
 import type { NoticePayload } from "../api/types"
+import { Field, FormCard, FormErrors, SubmitButton } from "../components/ui"
 import { useFlashNavigate } from "../lib/flash"
+import { useForm } from "../lib/useForm"
 
 export default function ForgotPassword() {
   const flashNavigate = useFlashNavigate()
-  const [alert, setAlert] = useState<string>()
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    try {
-      const { notice } = await api.post<NoticePayload>("/api/passwords", new FormData(event.currentTarget))
-      flashNavigate("/session/new", { notice })
-    } catch (error) {
-      if (!(error instanceof ApiError)) throw error
-      setAlert(error.message)
-    }
-  }
+  const { pending, errors, onSubmit } = useForm(async (form) => {
+    const { notice } = await api.post<NoticePayload>("/api/passwords", new FormData(form))
+    flashNavigate("/session/new", { notice })
+  })
 
   return (
-    <>
-      <h1>Forgot your password?</h1>
-
-      {alert && <div style={{ color: "red" }}>{alert}</div>}
-
-      <form onSubmit={submit}>
-        <input type="email" name="email_address" required autoFocus autoComplete="username" placeholder="Enter your email address" /><br />
-        <input type="submit" value="Email reset instructions" />
+    <FormCard title="Forgot your password?" subtitle="We'll email you a link to choose a new one." centered>
+      <form onSubmit={onSubmit}>
+        <FormErrors errors={errors} prefix="" />
+        <Field type="email" name="email_address" label="Email address" required autoFocus autoComplete="username" placeholder="Enter your email address" />
+        <SubmitButton pending={pending} fullWidth>Email reset instructions</SubmitButton>
       </form>
-    </>
+    </FormCard>
   )
 }

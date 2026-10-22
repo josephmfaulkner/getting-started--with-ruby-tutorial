@@ -1,11 +1,14 @@
-import type { FormEvent, ReactNode } from "react"
+import type { ReactNode } from "react"
+import { Button, Paper, Stack } from "@mui/material"
+import FilterListIcon from "@mui/icons-material/FilterList"
 import { useSearchParams } from "react-router"
+import { SelectField } from "../../components/ui"
 
 // GET-style filter form: submitting puts the selected values in the URL's query string
 export default function FilterForm({ children }: { children: ReactNode }) {
   const [, setSearchParams] = useSearchParams()
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const params = new URLSearchParams()
     for (const [key, value] of new FormData(event.currentTarget)) {
@@ -15,20 +18,18 @@ export default function FilterForm({ children }: { children: ReactNode }) {
   }
 
   return (
-    <form onSubmit={submit}>
-      {children}
-      <input type="submit" value="Filter" />
-    </form>
+    <Paper sx={{ p: 2, mb: 3 }}>
+      <Stack component="form" onSubmit={submit} direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ alignItems: { sm: "center" } }}>
+        {children}
+        <Button type="submit" variant="contained" startIcon={<FilterListIcon />} sx={{ flexShrink: 0 }}>Filter</Button>
+      </Stack>
+    </Paper>
   )
 }
 
 export function FilterSelect({ name, label, blank, options }: { name: string; label: string; blank: string; options: { value: string; label: string }[] }) {
   const [searchParams] = useSearchParams()
+  const value = searchParams.get(name) ?? ""
 
-  return (
-    <select name={name} aria-label={label} defaultValue={searchParams.get(name) ?? ""} key={searchParams.get(name) ?? ""}>
-      <option value="">{blank}</option>
-      {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-    </select>
-  )
+  return <SelectField key={`${value}-${options.length}`} name={name} label={label} blank={blank} options={options} defaultValue={value} size="small" margin="none" />
 }

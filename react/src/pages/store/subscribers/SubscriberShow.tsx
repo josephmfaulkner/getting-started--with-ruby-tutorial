@@ -1,7 +1,9 @@
-import { Link, useParams } from "react-router"
+import { useParams } from "react-router"
+import { Paper, Typography } from "@mui/material"
 import { api } from "../../../api/client"
 import type { NoticePayload, Subscriber } from "../../../api/types"
 import Loadable from "../../../components/Loadable"
+import { AppLink, BackLink, ConfirmButton, PageHeader } from "../../../components/ui"
 import { useFlashNavigate } from "../../../lib/flash"
 import { useApi } from "../../../lib/useApi"
 
@@ -11,7 +13,6 @@ export default function SubscriberShow() {
   const flashNavigate = useFlashNavigate()
 
   async function remove() {
-    if (!confirm("Are you sure?")) return
     const { notice } = await api.delete<NoticePayload>(`/api/store/subscribers/${id}`)
     flashNavigate("/store/subscribers", { notice })
   }
@@ -20,10 +21,11 @@ export default function SubscriberShow() {
     <Loadable result={subscriber}>
       {(subscriber) => (
         <>
-          <h1>{subscriber.email}</h1>
-          <p>Subscribed to <Link to={`/store/products/${subscriber.product.id}`}>{subscriber.product.name}</Link> on {subscriber.subscribed_on}</p>
-
-          <button type="button" onClick={remove}>Remove</button>
+          <BackLink to="/store/subscribers" />
+          <PageHeader title={subscriber.email} actions={<ConfirmButton variant="outlined" onConfirm={remove}>Remove</ConfirmButton>} />
+          <Paper sx={{ p: 3 }}>
+            <Typography>Subscribed to <AppLink to={`/store/products/${subscriber.product.id}`}>{subscriber.product.name}</AppLink> on {subscriber.subscribed_on}</Typography>
+          </Paper>
         </>
       )}
     </Loadable>

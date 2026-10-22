@@ -4,6 +4,7 @@ import { api, ApiError } from "../api/client"
 import type { NoticePayload } from "../api/types"
 import { useAuth } from "../lib/auth"
 import { useFlashNavigate } from "../lib/flash"
+import Working from "../components/Working"
 
 // Opened from the link in the email confirmation email
 export default function EmailConfirmation() {
@@ -24,5 +25,5 @@ export default function EmailConfirmation() {
       .catch((error) => flashNavigate("/", { alert: error instanceof ApiError ? error.message : String(error) }, { replace: true }))
   }, [token])
 
-  return <p>Confirming your email…</p>
+  return <Working>Confirming your email…</Working>
 }

@@ -1,22 +1,11 @@
-import { Fragment } from "react"
-import { pluralize } from "../lib/format"
+import { Box, FormLabel, Rating } from "@mui/material"
 
-// Star picker made of radio buttons (styled by .rating in application.css)
+// Star picker; submits its value with the form as `name`
 export default function RatingInput({ name, defaultValue }: { name: string; defaultValue?: number }) {
   return (
-    <fieldset>
-      <legend>Rating</legend>
-      <div className="rating">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <Fragment key={i}>
-            <input type="radio" name={name} id={`rating_${i}`} value={i} required className="sr-only" defaultChecked={defaultValue === i} />
-            <label htmlFor={`rating_${i}`}>
-              <span aria-hidden="true">★</span>
-              <span className="sr-only">{pluralize(i, "star")}</span>
-            </label>
-          </Fragment>
-        ))}
-      </div>
-    </fieldset>
+    <Box component="fieldset" sx={{ border: 0, p: 0, m: 0, mt: 2 }}>
+      <FormLabel component="legend" sx={{ mb: 0.5 }}>Rating</FormLabel>
+      <Rating name={name} defaultValue={defaultValue} size="large" />
+    </Box>
   )
 }

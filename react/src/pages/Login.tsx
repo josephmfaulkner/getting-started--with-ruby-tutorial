@@ -1,38 +1,35 @@
-import { useState, type FormEvent } from "react"
-import { Link, useLocation, useNavigate } from "react-router"
-import { api, ApiError } from "../api/client"
+import { Link as RouterLink, useLocation, useNavigate } from "react-router"
+import { Link, Stack, Typography } from "@mui/material"
+import { api } from "../api/client"
 import type { SessionPayload } from "../api/types"
+import { Field, FormCard, FormErrors, SubmitButton } from "../components/ui"
 import { useAuth } from "../lib/auth"
+import { useForm } from "../lib/useForm"
 
 export default function Login() {
   const { setSession } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [alert, setAlert] = useState<string>()
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    try {
-      setSession(await api.post<SessionPayload>("/api/session", new FormData(event.currentTarget)))
-      navigate((location.state as { from?: string } | null)?.from ?? "/")
-    } catch (error) {
-      if (!(error instanceof ApiError)) throw error
-      setAlert(error.message)
-    }
-  }
+  const { pending, errors, onSubmit } = useForm(async (form) => {
+    setSession(await api.post<SessionPayload>("/api/session", new FormData(form)))
+    navigate((location.state as { from?: string } | null)?.from ?? "/")
+  })
 
   return (
-    <>
-      {alert && <div style={{ color: "red" }}>{alert}</div>}
-
-      <form onSubmit={submit}>
-        <input type="email" name="email_address" required autoFocus autoComplete="username" placeholder="Enter your email address" /><br />
-        <input type="password" name="password" required autoComplete="current-password" placeholder="Enter your password" maxLength={72} /><br />
-        <input type="submit" value="Sign in" />
+    <FormCard title="Sign in" subtitle="Welcome back! Sign in to manage your wishlists and reviews." centered>
+      <form onSubmit={onSubmit}>
+        <FormErrors errors={errors} prefix="" />
+        <Field type="email" name="email_address" label="Email address" required autoFocus autoComplete="username" placeholder="Enter your email address" />
+        <Field type="password" name="password" label="Password" required autoComplete="current-password" placeholder="Enter your password" slotProps={{ htmlInput: { maxLength: 72 } }} />
+        <SubmitButton pending={pending} fullWidth>Sign in</SubmitButton>
       </form>
-      <br />
 
-      <Link to="/passwords/new">Forgot password?</Link>
-    </>
+      <Stack direction="row" sx={{ justifyContent: "space-between", mt: 3 }}>
+        <Link component={RouterLink} to="/passwords/new">Forgot password?</Link>
+        <Typography variant="body2" color="textSecondary">
+          New here? <Link component={RouterLink} to="/sign_up">Create an account</Link>
+        </Typography>
+      </Stack>
+    </FormCard>
   )
 }

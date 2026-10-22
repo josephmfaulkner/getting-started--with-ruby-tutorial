@@ -100,4 +100,11 @@ export interface Subscriber {
 export interface UserOption {
   id: number
   full_name: string
+  email_address: string
+}
+
+export interface StoreProductRow extends NamedRecord {
+  inventory_count: number
+  reviews_count: number
+  rating: number
 }

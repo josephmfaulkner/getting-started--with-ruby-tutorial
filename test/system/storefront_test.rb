@@ -29,7 +29,7 @@ class StorefrontTest < ApplicationSystemTestCase
     click_on "Sign in"
 
     assert_selector "h1", text: "Add a review"
-    find("label[for=rating_4]").click
+    find("label", text: "4 Stars").click
     fill_in "Body", with: "Pretty good"
     click_on "Create Review"
 

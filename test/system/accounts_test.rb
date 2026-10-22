@@ -55,7 +55,7 @@ class AccountsTest < ApplicationSystemTestCase
     assert_text "T-Shirt has been moved to Birthday"
     assert_text "0 Products"
 
-    accept_confirm { click_on "Delete" }
+    click_and_confirm "Delete"
     assert_selector "h1", text: "Your Wishlists"
     assert_no_link wishlists(:one).name
   end

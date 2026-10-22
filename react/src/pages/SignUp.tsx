@@ -1,62 +1,32 @@
-import { useState, type FormEvent } from "react"
 import { useNavigate } from "react-router"
-import { api, ApiError } from "../api/client"
+import { Stack } from "@mui/material"
+import { api } from "../api/client"
 import type { SessionPayload } from "../api/types"
-import Errors from "../components/Errors"
+import { Field, FormCard, FormErrors, SubmitButton } from "../components/ui"
 import { useAuth } from "../lib/auth"
+import { useForm } from "../lib/useForm"
 
 export default function SignUp() {
   const { setSession } = useAuth()
   const navigate = useNavigate()
-  const [errors, setErrors] = useState<string[]>([])
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    try {
-      setSession(await api.post<SessionPayload>("/api/sign_up", new FormData(event.currentTarget)))
-      navigate("/")
-    } catch (error) {
-      if (!(error instanceof ApiError)) throw error
-      setErrors(error.errors)
-    }
-  }
+  const { pending, errors, onSubmit } = useForm(async (form) => {
+    setSession(await api.post<SessionPayload>("/api/sign_up", new FormData(form)))
+    navigate("/")
+  })
 
   return (
-    <>
-      <h1>Sign Up</h1>
-
-      <form onSubmit={submit}>
-        <Errors errors={errors} />
-
-        <div>
-          <label htmlFor="user_first_name">First name</label>
-          <input type="text" id="user_first_name" name="user[first_name]" required autoFocus autoComplete="given-name" />
-        </div>
-
-        <div>
-          <label htmlFor="user_last_name">Last name</label>
-          <input type="text" id="user_last_name" name="user[last_name]" required autoComplete="family-name" />
-        </div>
-
-        <div>
-          <label htmlFor="user_email_address">Email address</label>
-          <input type="email" id="user_email_address" name="user[email_address]" required autoComplete="email" />
-        </div>
-
-        <div>
-          <label htmlFor="user_password">Password</label>
-          <input type="password" id="user_password" name="user[password]" required autoComplete="new-password" />
-        </div>
-
-        <div>
-          <label htmlFor="user_password_confirmation">Password confirmation</label>
-          <input type="password" id="user_password_confirmation" name="user[password_confirmation]" required autoComplete="new-password" />
-        </div>
-
-        <div>
-          <input type="submit" value="Sign up" />
-        </div>
+    <FormCard title="Sign Up" subtitle="Create an account to save wishlists and write reviews." centered>
+      <form onSubmit={onSubmit}>
+        <FormErrors errors={errors} />
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={{ sm: 2 }}>
+          <Field id="user_first_name" name="user[first_name]" label="First name" required autoFocus autoComplete="given-name" />
+          <Field id="user_last_name" name="user[last_name]" label="Last name" required autoComplete="family-name" />
+        </Stack>
+        <Field id="user_email_address" type="email" name="user[email_address]" label="Email address" required autoComplete="email" />
+        <Field id="user_password" type="password" name="user[password]" label="Password" required autoComplete="new-password" />
+        <Field id="user_password_confirmation" type="password" name="user[password_confirmation]" label="Password confirmation" required autoComplete="new-password" />
+        <SubmitButton pending={pending} fullWidth>Sign up</SubmitButton>
       </form>
-    </>
+    </FormCard>
   )
 }

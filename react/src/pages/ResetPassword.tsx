@@ -1,14 +1,19 @@
-import { useEffect, useState, type FormEvent } from "react"
+import { useEffect } from "react"
 import { useParams } from "react-router"
 import { api, ApiError } from "../api/client"
 import type { NoticePayload } from "../api/types"
+import { Field, FormCard, FormErrors, SubmitButton } from "../components/ui"
 import { useFlashNavigate } from "../lib/flash"
+import { useForm } from "../lib/useForm"
 
 export default function ResetPassword() {
   const { token = "" } = useParams()
   const path = `/api/passwords/${encodeURIComponent(token)}`
   const flashNavigate = useFlashNavigate()
-  const [alert, setAlert] = useState<string>()
+  const { pending, errors, onSubmit } = useForm(async (form) => {
+    const { notice } = await api.patch<NoticePayload>(path, new FormData(form))
+    flashNavigate("/session/new", { notice })
+  })
 
   // Send expired or invalid links back to the "forgot password" page
   useEffect(() => {
@@ -17,28 +22,14 @@ export default function ResetPassword() {
     })
   }, [path])
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    try {
-      const { notice } = await api.patch<NoticePayload>(path, new FormData(event.currentTarget))
-      flashNavigate("/session/new", { notice })
-    } catch (error) {
-      if (!(error instanceof ApiError)) throw error
-      setAlert(error.message)
-    }
-  }
-
   return (
-    <>
-      <h1>Update your password</h1>
-
-      {alert && <div style={{ color: "red" }}>{alert}</div>}
-
-      <form onSubmit={submit}>
-        <input type="password" name="password" required autoComplete="new-password" placeholder="Enter new password" maxLength={72} /><br />
-        <input type="password" name="password_confirmation" required autoComplete="new-password" placeholder="Repeat new password" maxLength={72} /><br />
-        <input type="submit" value="Save" />
+    <FormCard title="Update your password" centered>
+      <form onSubmit={onSubmit}>
+        <FormErrors errors={errors} prefix="" />
+        <Field type="password" name="password" label="New password" required autoComplete="new-password" placeholder="Enter new password" slotProps={{ htmlInput: { maxLength: 72 } }} />
+        <Field type="password" name="password_confirmation" label="Repeat new password" required autoComplete="new-password" placeholder="Repeat new password" slotProps={{ htmlInput: { maxLength: 72 } }} />
+        <SubmitButton pending={pending} fullWidth>Save</SubmitButton>
       </form>
-    </>
+    </FormCard>
   )
 }

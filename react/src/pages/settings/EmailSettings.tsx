@@ -1,51 +1,28 @@
-import { useState, type FormEvent } from "react"
-import { api, ApiError } from "../../api/client"
+import { api } from "../../api/client"
 import type { NoticePayload } from "../../api/types"
-import Errors from "../../components/Errors"
+import { Field, FormCard, FormErrors, SubmitButton } from "../../components/ui"
 import { useAuth } from "../../lib/auth"
 import { useFlash } from "../../lib/flash"
+import { useForm } from "../../lib/useForm"
 
 export default function EmailSettings() {
-  const { refresh } = useAuth()
+  const { user, refresh } = useAuth()
   const flash = useFlash()
-  const [errors, setErrors] = useState<string[]>([])
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const form = event.currentTarget
-    try {
-      const { notice } = await api.patch<NoticePayload>("/api/settings/email", new FormData(form))
-      form.reset()
-      setErrors([])
-      await refresh()
-      flash({ notice })
-    } catch (error) {
-      if (!(error instanceof ApiError)) throw error
-      setErrors(error.errors)
-    }
-  }
+  const { pending, errors, onSubmit } = useForm(async (form) => {
+    const { notice } = await api.patch<NoticePayload>("/api/settings/email", new FormData(form))
+    form.reset()
+    await refresh()
+    flash({ notice })
+  })
 
   return (
-    <>
-      <h1>Change Email</h1>
-
-      <form onSubmit={submit}>
-        <Errors errors={errors} />
-
-        <div>
-          <label htmlFor="user_unconfirmed_email">New email address</label>
-          <input type="email" id="user_unconfirmed_email" name="user[unconfirmed_email]" required />
-        </div>
-
-        <div>
-          <label htmlFor="user_password_challenge">Current password</label>
-          <input type="password" id="user_password_challenge" name="user[password_challenge]" required autoComplete="current-password" />
-        </div>
-
-        <div>
-          <input type="submit" value="Update email address" />
-        </div>
+    <FormCard title="Change Email" subtitle={user && `Your email address is ${user.email_address}.`}>
+      <form onSubmit={onSubmit}>
+        <FormErrors errors={errors} />
+        <Field id="user_unconfirmed_email" type="email" name="user[unconfirmed_email]" label="New email address" required />
+        <Field id="user_password_challenge" type="password" name="user[password_challenge]" label="Current password" required autoComplete="current-password" />
+        <SubmitButton pending={pending}>Update email address</SubmitButton>
       </form>
-    </>
+    </FormCard>
   )
 }

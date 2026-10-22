@@ -121,9 +121,11 @@ development:
   compile: true
   compiler_strategy: mtime
 
-  # Disable content hashes in development for faster builds
+  # Fingerprint file names in development too: with development caching on
+  # (bin/rails dev:cache), browsers cache public/ files for 2 days, and unchanged
+  # names would keep serving stale JavaScript after a rebuild.
   # https://webpack.js.org/guides/caching/
-  useContentHash: false
+  useContentHash: true
 
   # Early hints disabled by default in development
   # To enable: Set enabled: true AND start Puma with: bundle exec puma --early-hints

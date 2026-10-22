@@ -56,7 +56,7 @@ class StoreAdminTest < ApplicationSystemTestCase
     visit "/store/subscribers"
     assert_selector "h1", text: "#{Subscriber.count} Subscribers"
     click_on "david@example.org"
-    accept_confirm { click_on "Remove" }
+    click_and_confirm "Remove"
     assert_text "Subscriber has been removed."
     assert_no_text "david@example.org"
   end

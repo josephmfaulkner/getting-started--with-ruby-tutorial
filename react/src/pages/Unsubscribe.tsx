@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router"
 import { api } from "../api/client"
 import type { NoticePayload } from "../api/types"
 import { useFlashNavigate } from "../lib/flash"
+import Working from "../components/Working"
 
 // Opened from the unsubscribe link in "back in stock" emails
 export default function Unsubscribe() {
@@ -18,5 +19,5 @@ export default function Unsubscribe() {
       .then(({ notice }) => flashNavigate("/", { notice }, { replace: true }))
   }, [])
 
-  return <p>Unsubscribing…</p>
+  return <Working>Unsubscribing…</Working>
 }

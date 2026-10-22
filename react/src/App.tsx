@@ -1,4 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router"
+import { CssBaseline, ThemeProvider } from "@mui/material"
+import { theme } from "./theme"
 import Layout from "./components/Layout"
 import SettingsLayout from "./components/SettingsLayout"
 import { RequireAdmin, RequireAuth, RequireGuest } from "./components/guards"
@@ -36,57 +38,60 @@ import StoreSubscriberShow from "./pages/store/subscribers/SubscriberShow"
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route index element={<ProductsIndex />} />
-            <Route path="products/:id" element={<ProductShow />} />
-            <Route path="products/:id/reviews/new" element={<RequireAuth><NewReview /></RequireAuth>} />
-
-            <Route path="session/new" element={<Login />} />
-            <Route path="sign_up" element={<RequireGuest><SignUp /></RequireGuest>} />
-            <Route path="passwords/new" element={<ForgotPassword />} />
-            <Route path="passwords/:token/edit" element={<ResetPassword />} />
-            <Route path="email/confirmations/:token" element={<EmailConfirmation />} />
-            <Route path="unsubscribe" element={<Unsubscribe />} />
-
-            <Route path="wishlists" element={<RequireAuth><WishlistsIndex /></RequireAuth>} />
-            <Route path="wishlists/new" element={<RequireAuth><NewWishlist /></RequireAuth>} />
-            <Route path="wishlists/:id" element={<WishlistShow />} />
-            <Route path="wishlists/:id/edit" element={<RequireAuth><EditWishlist /></RequireAuth>} />
-
-            <Route path="settings" element={<RequireAuth><SettingsLayout /></RequireAuth>}>
-              <Route index element={<Navigate to="profile" replace />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="email" element={<EmailSettings />} />
-              <Route path="password" element={<PasswordSettings />} />
-              <Route path="user" element={<Account />} />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route index element={<ProductsIndex />} />
+              <Route path="products/:id" element={<ProductShow />} />
+              <Route path="products/:id/reviews/new" element={<RequireAuth><NewReview /></RequireAuth>} />
+  
+              <Route path="session/new" element={<Login />} />
+              <Route path="sign_up" element={<RequireGuest><SignUp /></RequireGuest>} />
+              <Route path="passwords/new" element={<ForgotPassword />} />
+              <Route path="passwords/:token/edit" element={<ResetPassword />} />
+              <Route path="email/confirmations/:token" element={<EmailConfirmation />} />
+              <Route path="unsubscribe" element={<Unsubscribe />} />
+  
+              <Route path="wishlists" element={<RequireAuth><WishlistsIndex /></RequireAuth>} />
+              <Route path="wishlists/new" element={<RequireAuth><NewWishlist /></RequireAuth>} />
+              <Route path="wishlists/:id" element={<WishlistShow />} />
+              <Route path="wishlists/:id/edit" element={<RequireAuth><EditWishlist /></RequireAuth>} />
+  
+              <Route path="settings" element={<RequireAuth><SettingsLayout /></RequireAuth>}>
+                <Route index element={<Navigate to="profile" replace />} />
+                <Route path="profile" element={<Profile />} />
+                <Route path="email" element={<EmailSettings />} />
+                <Route path="password" element={<PasswordSettings />} />
+                <Route path="user" element={<Account />} />
+              </Route>
+  
+              {/* Admins Only */}
+              <Route path="store" element={<RequireAdmin><SettingsLayout /></RequireAdmin>}>
+                <Route index element={<Navigate to="products" replace />} />
+                <Route path="products" element={<StoreProductsIndex />} />
+                <Route path="products/new" element={<NewProduct />} />
+                <Route path="products/:id" element={<StoreProductShow />} />
+                <Route path="products/:id/edit" element={<EditProduct />} />
+                <Route path="reviews" element={<StoreReviewsIndex />} />
+                <Route path="reviews/:id" element={<StoreReviewShow />} />
+                <Route path="reviews/:id/edit" element={<EditReview />} />
+                <Route path="users" element={<StoreUsersIndex />} />
+                <Route path="users/:id" element={<StoreUserShow />} />
+                <Route path="users/:id/edit" element={<EditUser />} />
+                <Route path="wishlists" element={<StoreWishlistsIndex />} />
+                <Route path="wishlists/:id" element={<StoreWishlistShow />} />
+                <Route path="subscribers" element={<StoreSubscribersIndex />} />
+                <Route path="subscribers/:id" element={<StoreSubscriberShow />} />
+              </Route>
+  
+              <Route path="*" element={<NotFound />} />
             </Route>
-
-            {/* Admins Only */}
-            <Route path="store" element={<RequireAdmin><SettingsLayout /></RequireAdmin>}>
-              <Route index element={<Navigate to="products" replace />} />
-              <Route path="products" element={<StoreProductsIndex />} />
-              <Route path="products/new" element={<NewProduct />} />
-              <Route path="products/:id" element={<StoreProductShow />} />
-              <Route path="products/:id/edit" element={<EditProduct />} />
-              <Route path="reviews" element={<StoreReviewsIndex />} />
-              <Route path="reviews/:id" element={<StoreReviewShow />} />
-              <Route path="reviews/:id/edit" element={<EditReview />} />
-              <Route path="users" element={<StoreUsersIndex />} />
-              <Route path="users/:id" element={<StoreUserShow />} />
-              <Route path="users/:id/edit" element={<EditUser />} />
-              <Route path="wishlists" element={<StoreWishlistsIndex />} />
-              <Route path="wishlists/:id" element={<StoreWishlistShow />} />
-              <Route path="subscribers" element={<StoreSubscribersIndex />} />
-              <Route path="subscribers/:id" element={<StoreSubscriberShow />} />
-            </Route>
-
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
