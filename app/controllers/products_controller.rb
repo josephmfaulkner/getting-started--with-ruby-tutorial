@@ -2,7 +2,7 @@ class ProductsController < ApplicationController
   allow_unauthenticated_access
 
   def index
-    @products = Product.all
+    @products = Product.with_attached_featured_image.with_rich_text_description
   end
 
   def show
