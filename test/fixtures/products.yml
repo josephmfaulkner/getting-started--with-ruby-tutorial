@@ -9,7 +9,11 @@ two:
 tshirt:
   name: T-Shirt
   inventory_count: 15
+  rating: 4.5
+  reviews_count: 2
 
 shoes:
   name: shoes
   inventory_count: 0
+  rating: 0
+  reviews_count: 0

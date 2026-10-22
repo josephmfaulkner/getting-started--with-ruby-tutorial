@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   root "products#index"
   resources :products do
     resource :wishlist, only: [ :create ], module: :products
+    resources :reviews, only: [ :new, :create ], module: :products
     resources :subscribers, only: [ :create ]
   end
   resource :unsubscribe, only: [ :show ]
@@ -30,6 +31,7 @@ Rails.application.routes.draw do
   # Admins Only
   namespace :store do
     resources :products
+    resources :reviews
     resources :users
     resources :wishlists
     resources :subscribers

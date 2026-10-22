@@ -1,0 +1,10 @@
+<h1>Reviews</h1>
+
+<%= form_with url: store_reviews_path, method: :get do |form| %>
+  <%= form.collection_select :product_id, Product.all, :id, :name, selected: params[:product_id], include_blank: "All Products" %>
+  <%= form.select :rating, 5.downto(1).map{ pluralize it, "star" }, selected: params[:rating], include_blank: "All Ratings" %>
+  <%= form.collection_select :user_id, User.all, :id, :full_name, selected: params[:user_id], include_blank: "All Users" %>
+  <%= form.submit "Filter" %>
+<% end %>
+
+<%= render @reviews %>

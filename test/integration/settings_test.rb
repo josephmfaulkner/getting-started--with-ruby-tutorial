@@ -40,4 +40,17 @@ class SettingsTest < ActionDispatch::IntegrationTest
     get store_users_path
     assert_response :success
   end
+
+  test "regular user cannot access /store/reviews" do
+    sign_in_as users(:one)
+    get store_reviews_path
+    assert_response :redirect
+    assert_equal "You aren't allowed to do that.", flash[:alert]
+  end
+
+  test "admin can access /store/reviews" do
+    sign_in_as users(:admin)
+    get store_reviews_path
+    assert_response :success
+  end
 end

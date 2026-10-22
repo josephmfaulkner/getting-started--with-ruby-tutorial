@@ -1,6 +1,7 @@
 class Product < ApplicationRecord
     
     include Notifications
+    has_many :reviews, dependent: :destroy
     has_many :subscribers, dependent: :destroy
     has_many :wishlist_products, dependent: :destroy
     has_many :wishlists, through: :wishlist_products
@@ -11,6 +12,10 @@ class Product < ApplicationRecord
     validates :inventory_count, numericality: { greater_than_or_equal_to: 0 }
 
     after_update_commit :notify_subscribers, if: :back_in_stock?
+
+    def rating_percentage(rating)
+      (reviews.where(rating: rating).count.to_f / reviews_count * 100).round
+    end
 
 
 end

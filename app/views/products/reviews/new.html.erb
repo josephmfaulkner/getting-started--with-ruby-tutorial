@@ -1,0 +1,28 @@
+<h1>Add a review</h1>
+
+<%= form_with model: [@product, @review] do |form| %>
+  <fieldset>
+    <legend>Rating</legend>
+    <div class="rating">
+      <% 1.upto(5).each do |i| %>
+        <%= form.radio_button :rating, i, required: true, class: "sr-only" %>
+        <%= form.label :rating, value: i do %>
+          <span aria-hidden="true">★</span>
+          <span class="sr-only"><%= pluralize(i, "star") %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </fieldset>
+
+  <div>
+    <%= form.label :body, style: "display: block;" %>
+    <%= form.textarea :body, required: true %>
+  </div>
+
+  <div>
+    <%= form.label :images, style: "display: block;" %>
+    <%= form.file_field :images, multiple: true, accept: "image/*", capture: "environment" %>
+  </div>
+
+  <%= form.submit %>
+<% end %>

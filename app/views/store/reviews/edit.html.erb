@@ -1,0 +1,36 @@
+<h1>Edit Review</h1>
+
+<%= form_with model: [:store, @review] do |form| %>
+  <fieldset>
+    <legend>Rating</legend>
+    <div class="rating">
+      <% 1.upto(5).each do |i| %>
+        <%= form.radio_button :rating, i, required: true, class: "sr-only" %>
+        <%= form.label :rating, value: i do %>
+          <span aria-hidden="true">★</span>
+          <span class="sr-only"><%= pluralize(i, "star") %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </fieldset>
+
+  <div>
+    <%= form.label :body, style: "display: block;" %>
+    <%= form.textarea :body, required: true %>
+  </div>
+
+  <div>
+    <%= form.label :images, style: "display: block;" %>
+    <%= form.file_field :images, multiple: true, accept: "image/*", capture: "environment" %>
+
+    <% form.object.images.each do |image| %>
+      <div>
+        <%= image_tag image.variant(resize_to_limit: [150, 150]) %>
+        <%= form.hidden_field :images, value: image.signed_id, multiple: true, id: nil %>
+        <button onclick="this.parentElement.remove()">Remove</button>
+      </div>
+    <% end %>
+  </div>
+
+  <%= form.submit %>
+<% end %>

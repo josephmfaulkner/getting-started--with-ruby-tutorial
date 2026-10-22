@@ -1,0 +1,11 @@
+five_star:
+  product: tshirt
+  user: one
+  rating: 5
+  body: I love this.
+
+four_star:
+  product: tshirt
+  user: two
+  rating: 4
+  body: Great quality.

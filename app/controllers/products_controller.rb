@@ -7,5 +7,6 @@ class ProductsController < ApplicationController
 
   def show
     @product = Product.find(params[:id])
+    @reviews = @product.reviews.with_attached_images.rated(params[:rating])
   end
 end

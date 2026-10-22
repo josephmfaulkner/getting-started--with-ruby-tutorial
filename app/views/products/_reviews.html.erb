@@ -1,0 +1,47 @@
+<section class="reviews">
+  <aside>
+    <h3>Reviews</h3>
+
+    <% if product.reviews_count > 0 %>
+      <div role="img" aria-label="<%= product.rating.round %> out of 5 stars">
+        <% 5.times do |i| %>
+          <%= tag.span "★", class: (i < product.rating.round ? "gold" : "gray"), aria: { hidden: true } %>
+        <% end %>
+        <%= product.rating %> out of 5
+      </div>
+
+      <div><%= pluralize product.reviews_count, "review" %></div>
+
+      <div>
+        <% 5.downto(1).each do |i| %>
+          <%= link_to product_path(product, rating: i), class: "review__summary", aria: { label: "#{pluralize(i, "star")} — #{product.rating_percentage(i)}% of reviews" } do %>
+            <div aria-hidden="true">
+              <div class="review__stars"><%= i %></div>
+              <div class="gold">★</div>
+              <div class="review__bars">
+                <div class="review__bar--background"></div>
+                <div class="review__bar" style="width: <%= product.rating_percentage(i) %>%;"></div>
+              </div>
+              <div class="review__percentage"><%= product.rating_percentage(i) %>%</div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <p>None yet!</p>
+    <% end %>
+
+    <%= link_to "Write a review", new_product_review_path(product) %>
+  </aside>
+
+  <div>
+    <% if params[:rating] %>
+      <div>
+        Filtered by <%= pluralize params[:rating].to_i, "star" %>.
+        <%= link_to "Clear filter", product %>
+      </div>
+    <% end %>
+
+    <%= render reviews %>
+  </div>
+</section>

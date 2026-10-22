@@ -1,0 +1,20 @@
+<%= tag.div id: dom_id(review), class: "review" do %>
+  <div><%= tag.strong review.user.full_name %></div>
+  <div role="img" aria-label="<%= review.rating %> out of 5 stars">
+    <% 5.times do |i| %>
+      <%= tag.span "★", class: (i < review.rating ? "gold" : "gray"), aria: { hidden: true } %>
+    <% end %>
+  </div>
+
+  <%= review.body %>
+
+  <% if review.images.attached? %>
+    <div class="review__images">
+      <% review.images.each do |image| %>
+        <%= link_to image, target: :_blank, title: "View full-size image (opens in new tab)", aria: { label: "View full-size image (opens in new tab)" } do %>
+          <%= image_tag image.variant(resize_to_limit: [150, 150]), alt: "" %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
