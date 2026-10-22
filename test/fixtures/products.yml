@@ -9,3 +9,7 @@ two:
 tshirt:
   name: T-Shirt
   inventory_count: 15
+
+shoes:
+  name: shoes
+  inventory_count: 0

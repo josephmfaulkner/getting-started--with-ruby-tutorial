@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_184740) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_191618) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -54,6 +54,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_184740) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "inventory_count", default: 0
+    t.integer "wishlists_count", default: 0
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -255,6 +256,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_184740) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  create_table "wishlist_products", force: :cascade do |t|
+    t.integer "product_id", null: false
+    t.integer "wishlist_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id", "wishlist_id"], name: "index_wishlist_products_on_product_id_and_wishlist_id", unique: true
+    t.index ["product_id"], name: "index_wishlist_products_on_product_id"
+    t.index ["wishlist_id"], name: "index_wishlist_products_on_wishlist_id"
+  end
+
+  create_table "wishlists", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "name"
+    t.integer "products_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_wishlists_on_user_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "sessions", "users"
@@ -267,4 +287,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_184740) do
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "subscribers", "products"
+  add_foreign_key "wishlist_products", "products"
+  add_foreign_key "wishlist_products", "wishlists"
+  add_foreign_key "wishlists", "users"
 end
