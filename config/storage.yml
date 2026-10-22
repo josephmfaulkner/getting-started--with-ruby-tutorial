@@ -1,3 +1,8 @@
+# Stores uploaded files in the database (active_storage_db gem), so they survive
+# deploys and restarts on hosts with temporary disks like Render
+db:
+  service: DB
+
 test:
   service: Disk
   root: <%= Rails.root.join("tmp/storage") %>

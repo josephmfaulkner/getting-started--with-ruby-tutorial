@@ -2,6 +2,7 @@ class Review < ApplicationRecord
   belongs_to :product, counter_cache: true
   belongs_to :user
   has_many_attached :images
+  compresses_images :images
 
   scope :rated, ->(rating) { rating.present? ? where(rating: rating.to_i) : all }
 

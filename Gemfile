@@ -62,3 +62,5 @@ group :test do
 end
 
 gem "shakapacker", "~> 10.3"
+
+gem "active_storage_db", "~> 1.6"

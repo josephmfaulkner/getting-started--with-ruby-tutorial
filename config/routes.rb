@@ -37,6 +37,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # Serves uploaded files stored in the database (see config/storage.yml)
+  mount ActiveStorageDB::Engine => "/active_storage_db"
+
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
@@ -52,5 +55,5 @@ Rails.application.routes.draw do
   get "passwords/:token/edit", to: "spa#show", as: :edit_password
   get "email/confirmations/:token", to: "spa#show", as: :email_confirmation
   get "unsubscribe", to: "spa#show", as: :unsubscribe
-  get "*path", to: "spa#show", constraints: ->(request) { request.format.html? && !request.path.start_with?("/rails/", "/api/") }
+  get "*path", to: "spa#show", constraints: ->(request) { request.format.html? && !request.path.start_with?("/rails/", "/api/", "/active_storage_db/") }
 end
