@@ -12,6 +12,7 @@ services:
     plan: free
     buildCommand: "./bin/render-build.sh"
     startCommand: "bin/rails server"
+    healthCheckPath: /up
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -22,5 +23,8 @@ services:
       # Run Solid Queue (background jobs) inside Puma; free plan has no worker services
       - key: SOLID_QUEUE_IN_PUMA
         value: "true"
+      # Run job workers as threads in the Puma process to stay within 512 MB
+      - key: SOLID_QUEUE_MODE
+        value: "async"
       - key: BUNDLE_WITHOUT
         value: "development:test"

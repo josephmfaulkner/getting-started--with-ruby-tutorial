@@ -36,6 +36,9 @@ plugin :tmp_restart
 
 # Run the Solid Queue supervisor inside of Puma for single-server deployments.
 plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
+# Run Solid Queue's workers as threads inside the Puma process instead of forked
+# processes, to fit within small memory limits (e.g. Render's 512 MB free plan).
+solid_queue_mode :async if ENV["SOLID_QUEUE_IN_PUMA"] && ENV["SOLID_QUEUE_MODE"] == "async"
 
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.

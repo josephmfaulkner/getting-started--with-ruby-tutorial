@@ -26,5 +26,6 @@ test:
 production:
   adapter: postgresql
   encoding: unicode
-  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  # Puma threads and (when SOLID_QUEUE_MODE=async) Solid Queue's threads share this pool.
+  max_connections: <%= ENV.fetch("DB_POOL") { 15 } %>
   url: <%= ENV["DATABASE_URL"] %>
