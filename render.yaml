@@ -1,0 +1,26 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+databases:
+  - name: getting-started-db
+    databaseName: getting_started_production
+    user: getting_started
+    plan: free
+
+services:
+  - type: web
+    name: getting-started
+    runtime: ruby
+    plan: free
+    buildCommand: "./bin/render-build.sh"
+    startCommand: "bin/rails server"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: getting-started-db
+          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false
+      # Run Solid Queue (background jobs) inside Puma; free plan has no worker services
+      - key: SOLID_QUEUE_IN_PUMA
+        value: "true"
+      - key: BUNDLE_WITHOUT
+        value: "development:test"
