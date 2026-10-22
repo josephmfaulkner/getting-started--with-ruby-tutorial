@@ -1,0 +1,2 @@
+<%# The current session (same JSON as GET /api/session), so the React app knows who's signed in on its first render %>
+<%= tag.div id: "root", data: { session: JSON.parse(render(template: "api/sessions/show", formats: [ :json ])) } %>

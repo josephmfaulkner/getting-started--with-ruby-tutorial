@@ -19,30 +19,12 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
+    <%= stylesheet_link_tag :app %>
+    <%# The React app, built by Shakapacker from react/src %>
+    <%= javascript_pack_tag "application", defer: true %>
   </head>
 
   <body>
-    <div class="notice"><%= flash[:notice] %></div>
-    <div class="alert"><%= flash[:alert] %></div>
-    <nav class="navbar">
-      <%= link_to "Home", root_path %>
-
-      <% if authenticated? %>
-        <%= link_to "Wishlists", wishlists_path %>
-        <%= link_to "Settings", settings_root_path %>
-        <%= button_to "Log out", session_path, method: :delete %>
-      <% else %>
-        <%= link_to "Sign Up", sign_up_path %>
-        <%= link_to "Login", new_session_path %>
-      <% end %>
-
-    </nav>
-
-    <main>
-      <%= content_for?(:content) ? yield(:content) : yield %>
-    </main>
+    <%= yield %>
   </body>
-
 </html>

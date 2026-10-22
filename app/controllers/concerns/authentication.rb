@@ -13,9 +13,8 @@ module Authentication
 
     def unauthenticated_access_only(**options)
       allow_unauthenticated_access **options
-      before_action -> { redirect_to root_path if authenticated? }, **options
+      before_action -> { render json: { errors: [ "You're already signed in." ] }, status: :forbidden if authenticated? }, **options
     end
-
   end
 
   private
@@ -36,12 +35,7 @@ module Authentication
     end
 
     def request_authentication
-      session[:return_to_after_authenticating] = request.url
-      redirect_to new_session_path
-    end
-
-    def after_authentication_url
-      session.delete(:return_to_after_authenticating) || root_url
+      render json: { errors: [ "Please sign in to continue." ] }, status: :unauthorized
     end
 
     def start_new_session_for(user)

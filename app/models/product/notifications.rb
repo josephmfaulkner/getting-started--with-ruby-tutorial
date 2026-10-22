@@ -7,7 +7,8 @@ module Product::Notifications
   end
 
   def back_in_stock?
-    inventory_count_previously_was.zero? && inventory_count.positive?
+    # Other updates (e.g. Active Storage touching the product after analyzing its image) don't change the count
+    saved_change_to_inventory_count? && inventory_count_previously_was.zero? && inventory_count.positive?
   end
 
   def notify_subscribers

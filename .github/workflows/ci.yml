@@ -31,13 +31,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          bundler-cache: true
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install JavaScript dependencies
+        run: npm ci
 
       - name: Scan for security vulnerabilities in JavaScript dependencies
-        run: bin/importmap audit
+        run: npm audit --omit=dev
+
+      - name: Type check the React app
+        run: npm run typecheck
+
+      - name: Run JavaScript tests
+        run: npm test
 
   lint:
     runs-on: ubuntu-latest
@@ -86,6 +96,15 @@ jobs:
         with:
           bundler-cache: true
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install JavaScript dependencies
+        run: npm ci
+
       - name: Run tests
         env:
           RAILS_ENV: test
@@ -113,6 +132,15 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install JavaScript dependencies
+        run: npm ci
 
       - name: Run System Tests
         env:
